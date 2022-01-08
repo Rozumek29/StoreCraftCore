@@ -1,0 +1,11 @@
+name: StoreCraftCore
+version: '${project.version}'
+main: com.github.rozumek29.storecraftcore.StoreCraftCore
+api-version: 1.16
+authors: [ Rozumek29 ]
+website: Storecraft.pl
+depend:
+  - PlaceholderAPI
+commands:
+  increase:
+  top:
