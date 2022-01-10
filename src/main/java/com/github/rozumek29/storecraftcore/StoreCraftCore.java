@@ -1,9 +1,8 @@
 package com.github.rozumek29.storecraftcore;
 
-import com.github.rozumek29.storecraftcore.commands.TopKillsCommand;
 import com.github.rozumek29.storecraftcore.database.SQLiteManager;
 import com.github.rozumek29.storecraftcore.listeners.*;
-import com.github.rozumek29.storecraftcore.models.TopUpdater;
+import com.github.rozumek29.storecraftcore.cache.TopUpdater;
 import com.github.rozumek29.storecraftcore.placeholders.PAPIExpansion;
 import com.github.rozumek29.storecraftcore.utils.ChatUtil;
 import org.bukkit.Bukkit;
@@ -24,7 +23,6 @@ public final class StoreCraftCore extends JavaPlugin implements Listener {
         SQLiteManager.connect();
         registerEvents();
         TopUpdater.runUpdater();
-        getCommand("top").setExecutor(new TopKillsCommand());
         new PAPIExpansion().register();
         getLogger().info(ChatUtil.fixColor("&7[&cCORE&7] &aPLUGIN ENABLED"));
     }

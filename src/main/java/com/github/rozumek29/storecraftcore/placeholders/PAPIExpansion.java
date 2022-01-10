@@ -1,10 +1,10 @@
 package com.github.rozumek29.storecraftcore.placeholders;
 
-import com.github.rozumek29.storecraftcore.models.StorePlayer;
-import com.github.rozumek29.storecraftcore.models.TopKills;
-import com.github.rozumek29.storecraftcore.utils.ChatUtil;
+import com.github.rozumek29.storecraftcore.cache.TopMaps;
+import com.github.rozumek29.storecraftcore.enums.Operation;
+import com.github.rozumek29.storecraftcore.enums.Type;
+import com.github.rozumek29.storecraftcore.models.*;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,103 +39,99 @@ public class PAPIExpansion extends PlaceholderExpansion {
         return true;
     }
 
-    HashMap<Integer, UUID> map = TopKills.getTopKills();
-    StorePlayer storePlayer;
+    HashMap<Integer, UUID> kills = TopMaps.getTopKills();
+    HashMap<Integer, UUID> deaths = TopMaps.getTopDeaths();
+    HashMap<Integer, UUID> bp = TopMaps.getTopBlockPlaced();
+    HashMap<Integer, UUID> bb = TopMaps.getTopBlockBreak();
+
     String value;
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         value = null;
-        switch (params) {
-            case "top_killer_1" -> {
-                if (map.get(1) != null){
-                    storePlayer = new StorePlayer(map.get(1));
-                    value = String.valueOf(storePlayer.getName());
+        if (params.contains("top")){
+            int index = Integer.parseInt(params.substring(params.length()-1));
+            if (index == 0){
+                index = 10;
+            }
+            if (params.contains("kills")){
+                if (params.contains("name")){
+                    value = getTop(index, Type.KILLS, Operation.NAME);
+                }else {
+                    value = getTop(index, Type.KILLS, Operation.VALUE);
                 }
-            }
-            case "top_killer_2" -> {
-                storePlayer = new StorePlayer(map.get(2));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_killer_3" -> {
-                if (map.get(3) != null) {
-                    storePlayer = new StorePlayer(map.get(3));
-                    value = String.valueOf(storePlayer.getName());
+            } else if (params.contains("deaths")){
+                if (params.contains("name")){
+                    value = getTop(index, Type.DEATHS, Operation.NAME);
+                }else {
+                    value = getTop(index, Type.DEATHS, Operation.VALUE);
                 }
-            }
-            case "top_killer_4" -> {
-                storePlayer = new StorePlayer(map.get(4));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_killer_5" -> {
-                storePlayer = new StorePlayer(map.get(5));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_killer_6" -> {
-                storePlayer = new StorePlayer(map.get(6));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_killer_7" -> {
-                storePlayer = new StorePlayer(map.get(7));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_killer_8" -> {
-                storePlayer = new StorePlayer(map.get(8));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_killer_9" -> {
-                storePlayer = new StorePlayer(map.get(9));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_killer_10" -> {
-                storePlayer = new StorePlayer(map.get(10));
-                value = String.valueOf(storePlayer.getName());
-            }
-            case "top_kills_1" -> {
-                storePlayer = new StorePlayer(map.get(1));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_2" -> {
-                storePlayer = new StorePlayer(map.get(2));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_3" -> {
-                storePlayer = new StorePlayer(map.get(3));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_4" -> {
-                storePlayer = new StorePlayer(map.get(4));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_5" -> {
-                storePlayer = new StorePlayer(map.get(5));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_6" -> {
-                storePlayer = new StorePlayer(map.get(6));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_7" -> {
-                storePlayer = new StorePlayer(map.get(7));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_8" -> {
-                storePlayer = new StorePlayer(map.get(8));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_9" -> {
-                storePlayer = new StorePlayer(map.get(9));
-                value = String.valueOf(storePlayer.getKills());
-            }
-            case "top_kills_10" -> {
-                storePlayer = new StorePlayer(map.get(10));
-                value = String.valueOf(storePlayer.getKills());
+            } else if (params.contains("bp")){
+                if (params.contains("name")){
+                    value = getTop(index, Type.BLOCK_PLACED, Operation.NAME);
+                }else {
+                    value = getTop(index, Type.BLOCK_PLACED, Operation.VALUE);
+                }
+            } else if (params.contains("bb")){
+                if (params.contains("name")){
+                    value = getTop(index, Type.BLOCK_BREAK, Operation.NAME);
+                }else {
+                    value = getTop(index, Type.BLOCK_BREAK, Operation.VALUE);
+                }
             }
         }
-        if (value != null) {
+        if (value != null){
             return value;
-        } else {
-            return ChatUtil.fixColor("&8----");
+        }else {
+            return "---";
         }
+    }
+
+    StorePlayer storePlayer;
+
+    private String getTop(int index, Type type, Operation operation){
+        switch (type){
+            case KILLS -> {
+                if (kills.size() >= index){
+                    storePlayer = new StorePlayer(kills.get(index));
+                    if (operation == Operation.NAME){
+                        return storePlayer.getName();
+                    }else if (operation == Operation.VALUE){
+                        return String.valueOf(storePlayer.getKills());
+                    }
+                }
+            }
+            case DEATHS -> {
+                if (deaths.size() >= index){
+                    storePlayer = new StorePlayer(deaths.get(index));
+                    if (operation == Operation.NAME){
+                        return storePlayer.getName();
+                    }else if (operation == Operation.VALUE){
+                        return String.valueOf(storePlayer.getDeaths());
+                    }
+                }
+            }
+            case BLOCK_PLACED -> {
+                if (bp.size() >= index){
+                    storePlayer = new StorePlayer(bp.get(index));
+                    if (operation == Operation.NAME){
+                        return storePlayer.getName();
+                    }else if (operation == Operation.VALUE){
+                        return String.valueOf(storePlayer.getBlockPlaced());
+                    }
+                }
+            }
+            case BLOCK_BREAK -> {
+                if (bb.size() >= index){
+                    storePlayer = new StorePlayer(bb.get(index));
+                    if (operation == Operation.NAME){
+                        return storePlayer.getName();
+                    }else if (operation == Operation.VALUE){
+                        return String.valueOf(storePlayer.getBlockBreak());
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

@@ -1,11 +1,9 @@
-package com.github.rozumek29.storecraftcore.models;
+package com.github.rozumek29.storecraftcore.cache;
 
 import com.github.rozumek29.storecraftcore.StoreCraftCore;
 import com.github.rozumek29.storecraftcore.database.SQLiteManager;
-import com.github.rozumek29.storecraftcore.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,10 +18,10 @@ public class TopUpdater {
     private static PreparedStatement ps;
     private static ResultSet rs;
 
-    private static HashMap<Integer, UUID> topkills = TopKills.getTopKills();
-    private static HashMap<Integer, UUID> topDeaths = TopDeaths.getTopDeaths();
-    private static HashMap<Integer, UUID> topBlockPlaced = TopBlockPlaced.getTopBlockPlaced();
-    private static HashMap<Integer, UUID> topBlockBreak = TopBlockBreak.getTopBlockBreak();
+    private static HashMap<Integer, UUID> topkills = TopMaps.getTopKills();
+    private static HashMap<Integer, UUID> topDeaths = TopMaps.getTopDeaths();
+    private static HashMap<Integer, UUID> topBlockPlaced = TopMaps.getTopBlockPlaced();
+    private static HashMap<Integer, UUID> topBlockBreak = TopMaps.getTopBlockBreak();
 
     private static final String killsSQL = "SELECT UUID, Kills FROM players ORDER BY Kills DESC LIMIT 10;";
     private static final String deathsSQL = "SELECT UUID, Deaths FROM players ORDER BY Deaths DESC LIMIT 10;";
