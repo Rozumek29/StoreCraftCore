@@ -1,7 +1,7 @@
 package com.github.rozumek29.storecraftcore.cache;
 
 import com.github.rozumek29.storecraftcore.StoreCraftCore;
-import com.github.rozumek29.storecraftcore.database.SQLiteManager;
+import com.github.rozumek29.storecraftcore.database.DataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -42,7 +42,7 @@ public class TopUpdater {
 
     private static HashMap<Integer, UUID> getTopMap(String sql, HashMap<Integer, UUID> map) {
         try {
-            ps = SQLiteManager.getConnection().prepareStatement(sql);
+            ps = DataSource.getConnection().prepareStatement(sql);
             ps.execute();
             rs = ps.getResultSet();
 
