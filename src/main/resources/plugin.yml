@@ -6,6 +6,3 @@ authors: [ Rozumek29 ]
 website: Storecraft.pl
 depend:
   - PlaceholderAPI
-commands:
-  increase:
-  top:
