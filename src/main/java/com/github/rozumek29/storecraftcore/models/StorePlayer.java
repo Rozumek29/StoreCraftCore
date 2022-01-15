@@ -60,6 +60,10 @@ public class StorePlayer {
     public void savePlayer(){
         try {
             ps = DataSource.getConnection().prepareStatement("UPDATE 'players' SET Kills="+this.kills+", Deaths=+"+this.deaths+", BlockPlaced="+this.blockPlaced+", BlockBreak="+this.blockBreak+" WHERE UUID LIKE '"+uuid+"';");
+            ps.setInt(1, this.getKills());
+            ps.setInt(2, this.getDeaths());
+            ps.setInt(3, this.blockPlaced);
+            ps.setString(4, this.getUuid().toString());
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,9 +72,11 @@ public class StorePlayer {
 
     public void increaseKills(){
         this.kills++;
-        try {
-            ps = DataSource.getConnection().prepareStatement("UPDATE 'players' SET Kills="+this.kills+" WHERE UUID LIKE '"+this.uuid+"';");
-            ps.execute();
+        try (Connection connection = DataSource.getConnection()){
+            PreparedStatement ps = connection.prepareStatement("UPDATE 'players' SET Kills="+this.kills+" WHERE UUID LIKE '"+this.uuid+"';");
+            ps.setInt(1, this.deaths);
+            ps.setString(2, this.uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -78,9 +84,11 @@ public class StorePlayer {
 
     public void increaseDeaths(){
         this.deaths++;
-        try {
-            ps = DataSource.getConnection().prepareStatement("UPDATE 'players' SET Deaths="+this.deaths+" WHERE UUID LIKE '"+this.uuid+"';");
-            ps.execute();
+        try (Connection connection = DataSource.getConnection()){
+            PreparedStatement ps = connection.prepareStatement("UPDATE 'players' SET Deaths="+this.deaths+" WHERE UUID LIKE '"+this.uuid+"';");
+            ps.setInt(1, this.deaths);
+            ps.setString(2, this.uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,9 +96,10 @@ public class StorePlayer {
 
     public void increaseBlocksPlaced(){
         this.blockPlaced++;
-        try {
-            ps = DataSource.getConnection().prepareStatement("UPDATE 'players' SET BlockPlaced="+this.blockPlaced+" WHERE UUID LIKE '"+this.uuid+"';");
-            ps.execute();
+        try (Connection connection = DataSource.getConnection()){
+            PreparedStatement ps = connection.prepareStatement("UPDATE 'players' SET BlockPlaced="+this.blockPlaced+" WHERE UUID LIKE '"+this.uuid+"';");
+            ps.setInt(1, this.blockPlaced);
+            ps.setString(2, this.uuid.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -98,9 +107,10 @@ public class StorePlayer {
 
     public void increaseBlocksBreak(){
         this.blockBreak++;
-        try {
-            ps = DataSource.getConnection().prepareStatement("UPDATE 'players' SET BlockBreak="+this.blockBreak+" WHERE UUID LIKE '"+this.uuid+"';");
-            ps.execute();
+        try (Connection connection = DataSource.getConnection()){
+            PreparedStatement ps = connection.prepareStatement("UPDATE 'players' SET BlockBreak="+this.blockBreak+" WHERE UUID LIKE '"+this.uuid+"';");
+            ps.setInt(1, this.blockBreak);
+            ps.setString(2, this.uuid.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
