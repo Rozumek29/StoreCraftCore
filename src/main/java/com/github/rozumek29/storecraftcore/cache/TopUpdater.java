@@ -5,6 +5,7 @@ import com.github.rozumek29.storecraftcore.database.DataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,11 +42,8 @@ public class TopUpdater {
     }
 
     private static HashMap<Integer, UUID> getTopMap(String sql, HashMap<Integer, UUID> map) {
-        try {
-            ps = DataSource.getConnection().prepareStatement(sql);
-            ps.execute();
-            rs = ps.getResultSet();
-
+        try (Connection connection = DataSource.getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
+            rs = ps.executeQuery();
             int i = 1;
 
             while (rs.next()){
@@ -53,7 +51,6 @@ public class TopUpdater {
                 map.put(i, uuid);
                 i++;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

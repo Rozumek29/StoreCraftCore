@@ -12,7 +12,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.sql.SQLException;
 
 public final class StoreCraftCore extends JavaPlugin implements Listener {
@@ -26,7 +25,6 @@ public final class StoreCraftCore extends JavaPlugin implements Listener {
         instance = this;
         configSetup();
         checkPAPI();
-        initializeDataBase();
         registerEvents();
         TopUpdater.runUpdater();
         new PAPIExpansion().register();
@@ -65,9 +63,5 @@ public final class StoreCraftCore extends JavaPlugin implements Listener {
         pm.registerEvents(new PlayerLeave(), this);
         pm.registerEvents(new BlockBreak(), this);
         pm.registerEvents(new BlockPlace(), this);
-    }
-
-    private void initializeDataBase() throws SQLException {
-        DataSource dataSource = new DataSource();
     }
 }

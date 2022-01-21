@@ -1,62 +1,36 @@
 package com.github.rozumek29.storecraftcore.database;
 
-import com.github.rozumek29.storecraftcore.StoreCraftCore;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class DataSource {
 
-    private static final Plugin plugin = StoreCraftCore.getInstance();
-    private static File file = new File(plugin.getDataFolder(), "database.db");
+    private static HikariConfig config = new HikariConfig();
     private static HikariDataSource ds;
 
     static {
-
+        config.setJdbcUrl("jdbc:mysql://localhost:3306");
+        config.setDataSourceClassName("com.mysql.cj.jdbc.MysqlDataSource");
+        config.addDataSourceProperty("databaseName", "test");
+        config.setUsername("u1_gqLefvi9Bc");
+        config.setPassword("MCQUF+ICmi@azWN8W=!wNjYC");
+        config.setMaximumPoolSize(10);
+        config.setMaxLifetime(1800000);
+        ds = new HikariDataSource(config);
     }
 
-    public DataSource(){
 
-        if (!file.exists()){
-            try {
-                file.createNewFile();
-            }catch (IOException e) {
-                plugin.getLogger().log(java.util.logging.Level.SEVERE,  "Filed to create database file (SQLite) Error -> " + e.getMessage());
-            }
-        }
+    private DataSource() {}
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-
-                HikariConfig config = new HikariConfig();
-                config.setPoolName("StoreCraftPool");
-                config.setDataSourceClassName("org.sqlite.SQLiteDataSource");
-                config.setJdbcUrl("jdbc:sqlite:"+file.getAbsolutePath());
-                config.setPoolName("StoreCraftDataBasePool");
-                config.setMaximumPoolSize(20);
-                config.setMaxLifetime(60000); // 60 Sec
-                config.setIdleTimeout(30000); // 30 Sec
-
-                ds = new HikariDataSource(config);
-            }
-        });
-
-    }
-
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException{
         return ds.getConnection();
     }
 
-    public static void closeConnections() {
-        if(!ds.isClosed()){
+    public static void closeConnections(){
+        if (!ds.isClosed()){
             ds.close();
         }
     }
